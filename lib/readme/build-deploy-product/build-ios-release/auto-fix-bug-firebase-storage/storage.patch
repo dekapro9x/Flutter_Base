@@ -1,0 +1,78 @@
+diff --git a/ios/Pods/FirebaseCore/FirebaseCore/Extension/FIRComponentType.h b/ios/Pods/FirebaseCore/FirebaseCore/Extension/FIRComponentType.h
+index 6f2aca7..97d4569 100644
+--- a/ios/Pods/FirebaseCore/FirebaseCore/Extension/FIRComponentType.h
++++ b/ios/Pods/FirebaseCore/FirebaseCore/Extension/FIRComponentType.h
+@@ -27,7 +27,7 @@ NS_SWIFT_NAME(ComponentType)
+ 
+ /// Do not use directly. A factory method to retrieve an instance that provides a specific
+ /// functionality.
+-+ (T)instanceForProtocol:(Protocol *)protocol inContainer:(FIRComponentContainer *)container;
+++ (nullable T)instanceForProtocol:(Protocol *)protocol inContainer:(FIRComponentContainer *)container;
+ 
+ @end
+ 
+diff --git a/ios/Pods/FirebaseCore/FirebaseCore/Sources/FIRComponentType.m b/ios/Pods/FirebaseCore/FirebaseCore/Sources/FIRComponentType.m
+index c9cd2ad..7e72cf0 100644
+--- a/ios/Pods/FirebaseCore/FirebaseCore/Sources/FIRComponentType.m
++++ b/ios/Pods/FirebaseCore/FirebaseCore/Sources/FIRComponentType.m
+@@ -20,7 +20,7 @@
+ 
+ @implementation FIRComponentType
+ 
+-+ (id)instanceForProtocol:(Protocol *)protocol inContainer:(FIRComponentContainer *)container {
+++ (nullable id)instanceForProtocol:(Protocol *)protocol inContainer:(FIRComponentContainer *)container {
+   // Forward the call to the container.
+   return [container instanceForProtocol:protocol];
+ }
+diff --git a/ios/Pods/FirebaseStorage/FirebaseStorage/Sources/Storage.swift b/ios/Pods/FirebaseStorage/FirebaseStorage/Sources/Storage.swift
+index 84c11ff..335030a 100644
+--- a/ios/Pods/FirebaseStorage/FirebaseStorage/Sources/Storage.swift
++++ b/ios/Pods/FirebaseStorage/FirebaseStorage/Sources/Storage.swift
+@@ -68,8 +68,10 @@ import FirebaseAuthInterop
+    * - Returns: A `Storage` instance, configured with the custom `FirebaseApp`.
+    */
+   @objc(storageForApp:) open class func storage(app: FirebaseApp) -> Storage {
+-    let provider = ComponentType<StorageProvider>.instance(for: StorageProvider.self,
+-                                                           in: app.container)
++    guard let provider = ComponentType<StorageProvider>.instance(for: StorageProvider.self,
++                                                                  in: app.container) else {
++      fatalError("No \(StorageProvider.self) instance found for Firebase app: \(app.name)")
++    }
+     return provider.storage(for: Storage.bucket(for: app))
+   }
+ 
+@@ -83,8 +85,10 @@ import FirebaseAuthInterop
+    */
+   @objc(storageForApp:URL:)
+   open class func storage(app: FirebaseApp, url: String) -> Storage {
+-    let provider = ComponentType<StorageProvider>.instance(for: StorageProvider.self,
+-                                                           in: app.container)
++    guard let provider = ComponentType<StorageProvider>.instance(for: StorageProvider.self,
++                                                                  in: app.container) else {
++      fatalError("No \(StorageProvider.self) instance found for Firebase app: \(app.name)")
++    }
+     return provider.storage(for: Storage.bucket(for: app, urlString: url))
+   }
+ 
+@@ -325,8 +329,8 @@ import FirebaseAuthInterop
+ 
+   private static func initFetcherServiceForApp(_ app: FirebaseApp,
+                                                _ bucket: String,
+-                                               _ auth: AuthInterop,
+-                                               _ appCheck: AppCheckInterop)
++                                               _ auth: AuthInterop?,
++                                               _ appCheck: AppCheckInterop?)
+     -> GTMSessionFetcherService {
+     objc_sync_enter(fetcherServiceLock)
+     defer { objc_sync_exit(fetcherServiceLock) }
+@@ -353,8 +357,8 @@ import FirebaseAuthInterop
+     return fetcherService!
+   }
+ 
+-  private let auth: AuthInterop
+-  private let appCheck: AppCheckInterop
++  private let auth: AuthInterop?
++  private let appCheck: AppCheckInterop?
+   private let storageBucket: String
+   private var usesEmulator: Bool = false
+   internal var host: String
