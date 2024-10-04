@@ -1,17 +1,97 @@
 name: app_base_flutter
 description: "Project Base Flutter"
 publish_to: 'none' 
+# Quản lý version của project:
 version: 1.0.0+1
+
 environment:
   sdk: ^3.5.1
+
+# Các thư viện cần thiết cho project:
+# 1. dio : Quản lý các request API
+# 2. get_it : Quản lý các service global
+# 3. injectable : Quản lý các service global kết hợp với get_it chạy lệnh flutter pub run build_runner build sẽ tự động tạo các file injectable.dart quản lý dependencies.
+# 4. flutter_bloc : Quản lý các state của ứng dụng kết hợp với cubit state management
+# 5. retrofit : Quản lý các request API kết hợp với dio quản lý các request API
+# 6. flutter_svg : Quản lý các ảnh svg
+# 7. shared_preferences : Quản lý các thông tin lưu trữ trên thiết bị
+# 8. image_picker : Quản lý các hành động chụp ảnh
+# 9. geolocator : Quản lý các hành động lấy vị trí
+# 10. json_serializable : Quản lý các dữ liệu trả về từ API
+# 11. flutter_html : Quản lý các html
+# 12. bmprogresshud : Quản lý các progress loading
+# 13. after_layout : Quản lý các hành động sau khi layout được tạo tránh lỗi khi widget được tạo trước khi layout được render hoàn chỉnh.
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
   dio: ^5.7.0
   get_it: ^8.0.0
+  get: ^4.6.6
+  flutter_bloc: ^8.1.6
+  image_picker: ^1.1.2
+  shared_preferences: ^2.3.2
+  flutter_svg: ^2.0.10+1
+  event_bus: ^2.0.1
+  geolocator: ^13.0.1
+  location: ^6.0.2
+  flutter_html: ^3.0.0-beta.2
+  injectable: ^2.5.0
+  retrofit: ^4.4.1
+  json_annotation: ^4.9.0
+  bmprogresshud: ^1.0.3
+  after_layout: ^1.2.0
+  flutter_localizations:
+    sdk: flutter
+
+# Cấu hình thư viện support cho dev:
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.1
+  build_runner: ^2.4.13
+  json_serializable: ^6.8.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+
+# Cấu hình icon launcher:
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21
+
 flutter:
+  # Thêm cấu hình các thư mục cần thiết cho project:
+  uses-material-design: true
+  # Thêm cấu hình thư mục assets:
+  assets:
+    - assets/
+    - assets/fonts/
+    - assets/icons/
+    - assets/images/
+  # Thêm cấu hình fonts chữ:
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/roboto/Roboto-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/roboto/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/roboto/Roboto-Bold.ttf
+          weight: 600
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/manrope/Manrope-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/manrope/Manrope-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/manrope/Manrope-Bold.ttf
+          weight: 600
+    - family: Playfair Display
+      fonts:
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/playfair_display/PlayfairDisplay-Bold.ttf
+          weight: 600
