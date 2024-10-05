@@ -1,9 +1,8 @@
+import 'package:app_base_flutter/configs/get_it/get_it.dart';
+import 'package:app_base_flutter/configs/storages/app_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
-import 'package:app_base_flutter/configs/storages/app_prefs.dart';
-import 'package:app_base_flutter/configs/get_it/get_it.dart';
-import 'package:app_base_flutter/routers/route_generator.dart';
 
 class PolicyScreen extends StatefulWidget {
   @override
