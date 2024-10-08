@@ -21,6 +21,9 @@ environment:
 # 11. flutter_html : Quản lý các html
 # 12. bmprogresshud : Quản lý các progress loading
 # 13. after_layout : Quản lý các hành động sau khi layout được tạo tránh lỗi khi widget được tạo trước khi layout được render hoàn chỉnh.
+# 14. persistent_bottom_nav_bar : Quản lý các tab bar bottombottobottobotto
+# 15. freezed_annotation : Quản lý các dữ liệu trả về từ API
+# 16. flutter_localizations: Quản lý các ngôn ngữ
 dependencies:
   flutter:
     sdk: flutter
@@ -44,6 +47,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   persistent_bottom_nav_bar: ^6.2.1
+  freezed_annotation: ^2.4.4
 
 # Cấu hình thư viện support cho dev:
 dev_dependencies:
@@ -53,6 +57,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  freezed: ^2.5.7
 
 # Cấu hình icon launcher:
 flutter_launcher_icons:

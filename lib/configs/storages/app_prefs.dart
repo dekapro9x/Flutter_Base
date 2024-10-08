@@ -1,11 +1,50 @@
+import 'dart:convert';
 import 'package:app_base_flutter/configs/global_constants.dart';
 import 'package:app_base_flutter/configs/storages/base_prefs.dart';
+import 'package:app_base_flutter/models/home/response/room_list_response.dart';
 
 class AppPrefStorage extends BasePrefsStorage {
   static Future<AppPrefStorage> instance() async {
     final _appPref = AppPrefStorage();
     await _appPref.init();
     return _appPref;
+  }
+
+  Future<void> setListRoomMeetingManage(
+      {required List<Map<String, dynamic>> rooms}) async {
+    String jsonString = jsonEncode(rooms);
+    await setValueForKey(GlobalConstants.listRoomMeetingManage, jsonString);
+  }
+
+  //Gán danh sách phòng họp đã được booking của tôi (Thêm vào danh sách phòng mới):
+  Future<void> setNewRoomMeetingBookingSuccess(
+      {required List<Map<String, dynamic>> rooms}) async {
+    String jsonString = jsonEncode(rooms);
+    await setValueForKey(GlobalConstants.listRoomBookingSuccess, jsonString);
+  }
+
+  //Lấy danh sách phòng họp đã được booking của tôi:
+  Future<List<Room>> getListRoomMeetingBookingSuccess() async {
+    String? jsonString =
+        await getValueForKey(GlobalConstants.listRoomBookingSuccess);
+    if (jsonString != null && jsonString.isNotEmpty) {
+      List<dynamic> jsonData = jsonDecode(jsonString);
+      return jsonData.map((json) => Room.fromJson(json)).toList();
+    } else {
+      return [];
+    }
+  }
+
+  //Lấy danh sách phòng họp được quản lý:
+  Future<List<Room>> getListRoomMeetingManage() async {
+    String? jsonString =
+        await getValueForKey(GlobalConstants.listRoomMeetingManage);
+    if (jsonString != null && jsonString.isNotEmpty) {
+      List<dynamic> jsonData = jsonDecode(jsonString);
+      return jsonData.map((json) => Room.fromJson(json)).toList();
+    } else {
+      return [];
+    }
   }
 
   //Lưu hành động người dùng đã đồng ý điều khoản:

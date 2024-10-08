@@ -9,7 +9,8 @@ class GlobalConstants {
   static const String FONT_FAMILY = 'FONT_FAMILY';
   static const String isAcceptPolicy = 'IS_ACCEPT_POLICY';
   static const String kUserLogin = 'USER_NAME_LOGIN';
-
+  static const String listRoomBookingSuccess = 'LIST_ROOM_MEETING_SUCCESS';
+  static const String listRoomMeetingManage = 'LIST_ROOM_MEETING_MANAGE';
   static List<String> cashRegisterTypes = ['open', 'close'];
   static List<String> orderStatus = ['final', 'draft'];
   static List<String> discountTypes = ['fixed', 'percentage'];

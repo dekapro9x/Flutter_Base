@@ -257,8 +257,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     currentPage == onboardingContents.length - 1
                         ? GestureDetector(
                             onTap: () {
-                              // navigator!.pushNamedAndRemoveUntil(
-                              //     RouteGenerator.loginScreen, (route) => false);
+                            navigator!.pushNamedAndRemoveUntil(
+                                  RouteGenerator.bottomNavigationBar, (route) => false);
                             },
                             child: Container(
                                 height:
