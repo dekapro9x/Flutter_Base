@@ -11,8 +11,16 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:app_base_flutter/screens/splash_screen/splash_screen_logo_app.dart';
+import 'package:app_base_flutter/configs/get_it/get_it.dart';
+import 'package:app_base_flutter/configs/storages/app_prefs.dart';
+import 'package:app_base_flutter/models/home/response/room_list_response.dart';
 
-void main() {
+void main() async {
+  logWithColor('BeoTranDev...Run main()', green);
+  //Kiểm tra WidgetsFlutterBinding.ensureInitialized() đã thực hiện xong mới chạy tiếp logic (Không lỗi nếu chưa thực hiện xong)
+  WidgetsFlutterBinding.ensureInitialized();
+  //Đăng kí khởi tạo GetX và dependencies:
+  await configureDependencies();
   runApp(const MyApp());
 }
 
@@ -25,16 +33,85 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp>
     with WidgetsBindingObserver, AfterLayoutMixin {
   final List<AppLifecycleState> _stateHistoryList = <AppLifecycleState>[];
+  final AppPrefStorage _appPref = AppPrefStorage();
+  final List<Map<String, dynamic>> roomsMeetingManage = [
+    {
+      "name": "Phòng Họp A",
+      "description": "Sức chứa 10 người",
+      "status": "available",
+      "openingHours": "07:00 AM",
+      "closingHours": "07:00 PM",
+      "isActive": false,
+      "bookedTimes": [],
+      "departments": []
+    },
+    {
+      "name": "Phòng Họp B",
+      "description": "Sức chứa 20 người",
+      "status": "booked",
+      "openingHours": "07:00 AM",
+      "closingHours": "07:00 PM",
+      "isActive": true,
+      "bookedTimes": ["10:00 AM - 11:00 AM"],
+      "departments": ["Phòng Kế Toán"]
+    },
+    {
+      "name": "Phòng Họp C",
+      "description": "Sức chứa 15 người",
+      "status": "available",
+      "openingHours": "08:00 AM",
+      "closingHours": "05:00 PM",
+      "isActive": false,
+      "bookedTimes": ["01:00 PM - 02:00 PM", "03:00 PM - 04:00 PM"],
+      "departments": ["Phòng Kế Toán", "Phòng R&D"]
+    },
+    {
+      "name": "Phòng Họp D",
+      "description": "Sức chứa 8 người",
+      "status": "available",
+      "openingHours": "10:00 AM",
+      "closingHours": "04:00 PM",
+      "isActive": false,
+      "bookedTimes": ["02:00 PM - 03:00 PM"],
+      "departments": ["Phòng IT"]
+    },
+    {
+      "name": "Phòng Họp E",
+      "description": "Sức chứa 12 người",
+      "status": "available",
+      "openingHours": "08:30 AM",
+      "closingHours": "06:30 PM",
+      "isActive": false,
+      "bookedTimes": ["11:00 AM - 11:30 AM", "03:00 PM - 04:00 PM"],
+      "departments": ["Phòng nhân sự", "Phòng kinh doanh"]
+    }
+  ];
+
   @override
   Future<void> afterFirstLayout(BuildContext context) async {}
 
   @override
   void initState() {
-    logWithColor('BeoTran: Main App() Running........', green);
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    if (WidgetsBinding.instance.lifecycleState != null) {
-      _stateHistoryList.add(WidgetsBinding.instance.lifecycleState!);
+    saveRoomMeetingList();
+    if (WidgetsBinding.instance != null) {
+      WidgetsBinding.instance.addObserver(this);
+      if (WidgetsBinding.instance.lifecycleState != null) {
+        _stateHistoryList.add(WidgetsBinding.instance.lifecycleState!);
+      }
+    }
+  }
+
+  Future<void> saveRoomMeetingList() async {
+    await _appPref.init();
+    final listRoomChat = await _appPref.getListRoomMeetingManage();
+    if (listRoomChat.isEmpty) {
+      List<Room> roomsList = roomsMeetingManage
+          .map((roomJson) => Room.fromJson(roomJson))
+          .toList();
+      List<Map<String, dynamic>> roomsJsonList =
+          roomsList.map((room) => room.toJson()).toList();
+      await _appPref.setListRoomMeetingManage(rooms: roomsJsonList);
     }
   }
 
@@ -47,31 +124,19 @@ class _MyAppState extends State<MyApp>
         title: GlobalConfigs.appName,
         home: LayoutBuilder(
           builder: (layoutContext, constraints) {
-            // WidgetsBinding.instance.addPostFrameCallback((_) {
-            //   if (alreadyAddedOverlays) {
-            //     return;
-            //   }
-            //   Overlay.of(layoutContext).insert(
-            //     OverlayEntry(builder: (context) => const VideoCallUIKit()),
-            //   );
-            //   alreadyAddedOverlays = true;
-            // });
             return const SplashScreenLogoApp();
           },
         ),
-        //Cấu hình đa ngôn ngữ cho toàn bộ App:
         locale: Get.locale ?? const Locale('vi'),
         fallbackLocale: const Locale('vi'),
         translationsKeys: AppTranslation.translations,
         supportedLocales: GlobalConfigs.supportedLocales,
-        //Danh sách các delegate cần thiết để hỗ trợ việc quốc tế hóa các thành phần giao diện người dùng của Flutter.
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
         builder: (BuildContext context, Widget? child) {
-          //đặt tỷ lệ tăng giảm văn bản cho thoáng UI hơn để các thành phần giao diện người dùng có thể phù hợp hơn với nhiều màn hình khác nhau.
           return MediaQuery(
             data: MediaQuery.of(context)
                 .copyWith(textScaler: const TextScaler.linear(1.0)),

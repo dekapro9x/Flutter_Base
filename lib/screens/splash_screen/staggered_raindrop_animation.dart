@@ -35,13 +35,11 @@ class StaggeredRaindropAnimation {
         );
 
   final AnimationController controller;
-
   final Animation<double> dropSize;
   final Animation<double> dropPosition;
   final Animation<bool> dropVisible;
   final Animation<double> holeSize;
   final Animation<double> textOpacity;
-
   static final double maximumDropSize = 20;
   static final double maximumRelativeDropY = 0.5;
   static final double maximumHoleSize = 10;
